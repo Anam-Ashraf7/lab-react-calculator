@@ -21,21 +21,29 @@ const Calculator = () => {
             case ADDINPUT: {
                 let addOperator = true
                 
-                if((operators.includes(action.payload) && operators.includes(state.inputs.slice(state.inputs.length-1,state.inputs.length))) || action.payload == "0"){
+                if((operators.includes(action.payload)) && operators.includes(state.inputs.slice(state.inputs.length-1,state.inputs.length))){
                     addOperator = false
                 } else {
                     addOperator = true
                 }
                 if (addOperator) {
-                    return {...state,inputs:state.inputs+action.payload}
+
+                    if (operators.includes(state.inputs.slice(0,1)) || state.inputs.slice(0,1) == "0"){
+                        return {...state,inputs:action.payload}
+                    }else{
+                        return {...state,inputs:state.inputs+action.payload}
+                    }
                 }
                 return {...state}
             }
 
             case CALCULATE: {
+                
                 const inputLength = state.inputs.length
+
+                // if(operators.includes(state.inputs))
+
                 if(!operators.includes(state.inputs.slice(inputLength-1,inputLength))){
-                    
                     try{
                         const newInput = {...state,result:eval(state.inputs).toString(),inputs:state.result}
                         console.log(newInput.result)
@@ -47,11 +55,10 @@ const Calculator = () => {
                 }else {
                     try{
                         return {...state,inputs:eval(state.inputs.slice(0,inputLength-1)).toString(),result:""}
-                    }catch(err) {
+                    } catch(err) {
                         console.log(err)
                     }
                 }
-                return
             }
 
             case CLEAR: {
