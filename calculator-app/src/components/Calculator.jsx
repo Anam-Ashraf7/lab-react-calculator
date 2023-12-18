@@ -20,14 +20,14 @@ const Calculator = () => {
 
             case ADDINPUT: {
                 let addOperator = true
-                
+                // To prevent adding two operators consecutively at the same time
                 if((operators.includes(action.payload)) && operators.includes(state.inputs.slice(state.inputs.length-1,state.inputs.length))){
                     addOperator = false
                 } else {
                     addOperator = true
                 }
                 if (addOperator) {
-
+                    // Check if the first input is an operator or zero and replace them with current input if they are
                     if (operators.includes(state.inputs.slice(0,1)) || state.inputs.slice(0,1) == "0"){
                         return {...state,inputs:action.payload}
                     }else{
@@ -40,19 +40,17 @@ const Calculator = () => {
             case CALCULATE: {
                 
                 const inputLength = state.inputs.length
-
-                // if(operators.includes(state.inputs))
-
                 if(!operators.includes(state.inputs.slice(inputLength-1,inputLength))){
                     try{
+                        // If last added element is not an operator eval the input
                         const newInput = {...state,result:eval(state.inputs).toString(),inputs:state.result}
-                        console.log(newInput.result)
                         return {...state,result:"",inputs:newInput.result}
                     } catch(err) {
                         console.log(err)
                     }
 
                 }else {
+                    // If last added element is an operator eval everything except for the last element
                     try{
                         return {...state,inputs:eval(state.inputs.slice(0,inputLength-1)).toString(),result:""}
                     } catch(err) {
